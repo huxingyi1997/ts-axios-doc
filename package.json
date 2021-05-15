@@ -9,18 +9,18 @@
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
-    "deploy": "gh-pages -d dist"
+    "deploy": "bash deploy.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Suremotoo/ts-axios-doc.git"
+    "url": "git+https://github.com/huxingyi1997/ts-axios-doc.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Suremotoo/ts-axios-doc/issues"
+    "url": "https://github.com/huxingyi1997/ts-axios-doc/issues"
   },
-  "homepage": "https://github.com/Suremotoo/ts-axios-doc#readme",
+  "homepage": "https://github.com/huxingyi1997/ts-axios-doc#readme",
   "devDependencies": {
     "vuepress": "^1.0.0-alpha.44"
   },
