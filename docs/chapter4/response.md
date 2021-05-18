@@ -21,7 +21,9 @@ axios({
 
 ## 定义接口类型
 
-根据需求，我们可以定义一个 `AxiosResponse` 接口类型，如下：
+根据需求，我们可以定义一个 `AxiosResponse` 接口类型：
+
+`types/index.ts`：
 
 ```typescript
 export interface AxiosResponse {
@@ -151,5 +153,4 @@ axios({
 我们打开浏览器运行 demo，看一下结果，发现我们可以正常 log 出这个 `res` 变量，它包含 `AxiosResponse` 类型中定义的那些属性，不过我们发现 2 个小问题：第一个是 `headers` 属性是一个字符串，我们需要把它解析成对象类型；第二个是在第一个请求中，得到的数据是一个 JSON 字符串，我们也需要把它转换成对象类型。
 
 那么下一小节，我们将来解决第一个问题，对于响应的 `header` 做处理。
-
 

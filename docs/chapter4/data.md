@@ -77,7 +77,7 @@ if (isDate(val)) {
 ```typescript
 import { transformRequest } from './helpers/data'
 
-```typescript
+
 function processConfig (config: AxiosRequestConfig): void {
   config.url = transformURL(config)
   config.data = transformRequestData(config)
@@ -141,5 +141,4 @@ router.post('/base/buffer', function(req, res) {
 实际上是因为我们虽然执行 `send` 方法的时候把普通对象 `data` 转换成一个 `JSON` 字符串，但是我们请求`header` 的 `Content-Type` 是 `text/plain;charset=UTF-8`，导致了服务端接受到请求并不能正确解析请求 `body` 的数据。
 
 知道这个问题后，下面一节课我们来实现对请求 `header` 的处理。
-
 

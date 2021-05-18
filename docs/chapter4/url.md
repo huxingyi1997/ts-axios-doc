@@ -225,7 +225,7 @@ function processConfig (config: AxiosRequestConfig): void {
 
 function transformUrl (config: AxiosRequestConfig): string {
   const { url, params } = config
-  return bulidURL(url, params)
+  return buildURL(url, params)
 }
 ```
 

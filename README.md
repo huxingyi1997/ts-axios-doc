@@ -2,6 +2,10 @@
 
 TypeScript 从零实现 axios 文档教材
 
+## 在线阅读
+
+网址：[TypeScript 从零实现 axios](https://hxy1997.xyz/ts-axios-doc/)
+
 ## 启动电子书
 
 首先 clone 本项目：
