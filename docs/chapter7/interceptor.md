@@ -84,11 +84,20 @@ export interface ResolvedFn<T=any> {
 export interface RejectedFn {
   (error: any): any
 }
+
+export interface Axios {
+  interceptors: {
+    request: AxiosInterceptorManager<AxiosRequestConfig>
+    response: AxiosInterceptorManager<AxiosResponse>
+  }
+}
 ```
 
 这里我们定义了 `AxiosInterceptorManager` 泛型接口，因为对于 `resolve` 函数的参数，请求拦截器和响应拦截器是不同的。
 
 ### 代码实现
+
+`core/InterceptorManager.ts`
 
 ```typescript
 import { ResolvedFn, RejectedFn } from '../types'
@@ -205,7 +214,7 @@ request(url: any, config?: any): AxiosPromise {
 
 接下来定义一个已经 resolve 的 `promise`，循环这个 `chain`，拿到每个拦截器对象，把它们的 `resolved` 函数和 `rejected` 函数添加到 `promise.then` 的参数中，这样就相当于通过 Promise 的链式调用方式，实现了拦截器一层层的链式调用的效果。
 
-注意我们拦截器的执行顺序，对于请求拦截器，先执行后添加的，再执行先添加的；而对于响应拦截器，先执行先添加的，后执行后添加的。
+注意我们拦截器的执行顺序，对于请求拦截器，先执行后添加的，后执行先添加的；而对于响应拦截器，先执行先添加的，后执行后添加的。
 
 ## demo 编写
 
@@ -268,7 +277,19 @@ axios({
 })
 ```
 
-该 demo 我们添加了 3 个请求拦截器，添加了 3 个响应拦截器并删除了第二个。运行该 demo 我们通过浏览器访问，我们发送的请求添加了一个 `test` 的请求 header，它的值是 `321`；我们的响应数据返回的是 `hello`，经过响应拦截器的处理，最终我们输出的数据是 `hello13`。
+该 demo 我们添加了 3 个请求拦截器，添加了 3 个响应拦截器并删除了第二个。
+
+添加路由规则
+
+ `server.ts` 
+
+```
+router.get('/interceptor/get', function(req, res) {
+  res.end('hello ')
+})
+```
+
+运行该 demo 我们通过浏览器访问，我们发送的请求添加了一个 `test` 的请求 header，它的值是 `321`；我们的响应数据返回的是 `hello`，经过响应拦截器的处理，最终我们输出的数据是 `hello13`。
 
 至此，我们给 `ts-axios` 实现了拦截器功能，它是一个非常实用的功能，在实际工作中我们可以利用它做一些需求如登录权限认证。
 

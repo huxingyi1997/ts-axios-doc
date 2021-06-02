@@ -28,7 +28,7 @@
     ".(ts|tsx)": "ts-jest"
   },
   "testEnvironment": "jsdom",
-  "testRegex": "/test/.*\\.(test|spec)\\.(ts)$",
+  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
   "moduleFileExtensions": [
     "ts",
     "tsx",
@@ -79,12 +79,12 @@
 - [testRegex](https://jestjs.io/docs/en/configuration#testregex-string-array-string)
 
 要测试文件的正则表达式。
- 
+
 ```json
-"testRegex": "/test/.*\\.(test|spec)\\.(ts)$"
-``` 
- 
-表示 `test` 目录下所有以 `.test.ts` 和 `.spec.ts` 的文件都需要跑测试。
+"testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+```
+
+表示 `tests` 目录下所有以 `.test.ts` 和 `.spec.ts` 的文件都需要跑测试。
 
 - [moduleFileExtensions](https://jestjs.io/docs/en/configuration#modulefileextensions-array-string)
 
@@ -146,7 +146,6 @@
 其他关于 Jest 的配置，感兴趣的同学可以去[官网](https://jestjs.io/docs/en/configuration)做扩展学习。
 
 至此，我们学习了 Jest 的安装和配置，下节课我们就开始编写 `ts-axios` 库的单元测试。
-
 
 
 

@@ -259,6 +259,8 @@ describe('helpers:header', () => {
       expect(parsed['transfer-encoding']).toBe('chunked')
       expect(parsed['date']).toBe('Tue, 21 May 2019 09:23:44 GMT')
       expect(parsed['key']).toBe('')
+      const emptyKeyVal = Object.values(parsed).includes('empty key')
+      expect(emptyKeyVal).toBeFalsy()
     })
 
     test('should return empty object if headers is empty string', () => {
@@ -339,7 +341,7 @@ describe('helpers:header', () => {
 })
 ```
 
-运行后，我们会发现 `parseHeaders` 测试组的 `should parse headers` 测试没通过，`expect(parsed['date']).toBe('Tue, 21 May 2019 09:23:44 GMT')` 我们期望解析后的 `date` 字段是 `Tue, 21 May 2019 09:23:44 GMT`，而实际的值是 `Tue, 21 May 2019 09`。
+运行后，我们会发现 `parseHeaders` 测试组的 `should parse headers` 测试没通过，`expect(parsed['date']).toBe('Thu, 27 May 2021 20:31:44 GMT')` 我们期望解析后的 `date` 字段是 `Thu, 27 May 2021 20:31:44 GMT`，而实际的值是 `Thu, 27 May 2021 20`。
 
 测试没通过，我们检查一下代码，发现我们 `parseHeaders` 的代码逻辑漏洞，我们只考虑了第一个 ":" 号，没考虑后半部分的字符串内部也可能有 ":"，按我们现有的逻辑就会把字符串中 ":" 后面部分都截断了。
 

@@ -32,4 +32,4 @@ npm install
 npm run dev
 ```
 
-浏览器打开 `http://localhost:8080/ts-axios/` 即可。
+浏览器打开 `http://localhost:8080/ts-axios-doc/` 即可。

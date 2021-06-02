@@ -110,7 +110,6 @@ export default function transform(
 `dispatchRequest.ts`：
 
 ```typescript
-
 import transform from './transform'
 
 function processConfig(config: AxiosRequestConfig): void {

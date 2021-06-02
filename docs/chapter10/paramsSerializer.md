@@ -116,6 +116,8 @@ function transformURL(config: AxiosRequestConfig): string {
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 axios.get('/more/get', {
   params: new URLSearchParams('a=b&c=d')

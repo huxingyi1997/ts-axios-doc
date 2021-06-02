@@ -22,7 +22,7 @@ axios.defaults.timeout = 2000
 
 接下来，我们先实现默认配置
 
-`defaults.ts`：
+`src/defaults.ts`：
 
 ```typescript
 import { AxiosRequestConfig } from './types'
@@ -78,7 +78,7 @@ export default class Axios {
   }
   // ...
 }  
-``` 
+```
 
 我们给 `Axios` 类添加一个 `defaults` 成员属性，并且让 `Axios` 的构造函数接受一个 `initConfig` 对象，把 `initConfig` 赋值给 `this.defaults`。
 
@@ -87,7 +87,7 @@ export default class Axios {
 ```typescript
 import defaults from './defaults'
 
-function createInstance(config: AxiosRequestConfig): AxiosStatic {
+function createInstance(config: AxiosRequestConfig): AxiosInstance {
   const context = new Axios(config)
   const instance = Axios.prototype.request.bind(context)
 
@@ -95,7 +95,7 @@ function createInstance(config: AxiosRequestConfig): AxiosStatic {
 
   extend(instance, context)
 
-  return instance as AxiosStatic
+  return instance as AxiosInstance
 }
 
 const axios = createInstance(defaults)
@@ -152,6 +152,14 @@ merged = {
 ### 合并方法
 
 ```typescript
+import { AxiosRequestConfig } from '../types/index'
+
+const strats = Object.create(null)
+
+function defaultStrat(val1: any, val2: any): any {
+  return typeof val2 !== 'undefined' ? val2 : val1
+}
+
 export default function mergeConfig(
   config1: AxiosRequestConfig,
   config2?: AxiosRequestConfig
@@ -291,7 +299,7 @@ config = mergeConfig(this.defaults, config)
 经过合并后的配置中的 `headers` 是一个复杂对象，多了 `common`、`post`、`get` 等属性，而这些属性中的值才是我们要真正添加到请求 `header` 中的。
 
  举个例子：
- 
+
 ```typescript
 headers: {
   common: {
@@ -393,6 +401,27 @@ axios({
 ```
 
 这个例子中我们额外引入了 `qs` 库，它是一个查询字符串解析和字符串化的库。
+
+axios实例AxiosInstance需要从Axios中继承defaults属性
+
+ `type/index.ts` 
+
+```typescript
+export interface Axios {
+  // 默认：请求配置
+  defaults: AxiosRequestConfig
+}
+```
+
+添加路由规则
+
+ `server.ts` 
+
+```typescript
+router.post('/config/post', function(req, res) {
+  res.json(req.body)
+})
+```
 
 比如我们的例子中对于 `{a:1}` 经过 `qs.stringify` 变成 `a=1`。
 

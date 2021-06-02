@@ -72,6 +72,8 @@ function handleResponse(response: AxiosResponse): void {
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 axios.get('/more/304').then(res => {
   console.log(res)

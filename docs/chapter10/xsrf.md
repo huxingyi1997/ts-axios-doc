@@ -128,6 +128,8 @@ if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName){
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 const instance = axios.create({
   xsrfCookieName: 'XSRF-TOKEN-D',

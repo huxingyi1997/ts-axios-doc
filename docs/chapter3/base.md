@@ -153,13 +153,13 @@ export default axios
 我们先来安装一些编写 demo 需要的依赖包，如下：
 
 ```
-"webpack": "^4.28.4",
-"webpack-dev-middleware": "^3.5.0",
-"webpack-hot-middleware": "^2.24.3",
-"ts-loader": "^5.3.3",
+"webpack": "^5.24.0",
+"webpack-dev-middleware": "^4.1.0",
+"webpack-hot-middleware": "^2.25.0",
+"ts-loader": "^8.0.17",
 "tslint-loader": "^3.5.4",
-"express": "^4.16.4",
-"body-parser": "^1.18.3"
+"express": "^4.17.1",
+"body-parser": "^1.19.0"
 ```
 
 其中，`webpack` 是打包构建工具，`webpack-dev-middleware` 和 `webpack-hot-middleware` 是 2 个 `express` 的 `webpack` 中间件，`ts-loader` 和 `tslint-loader` 是 `webpack` 需要的 TypeScript 相关 loader，`express` 是 Node.js 的服务端框架，`body-parser` 是 `express` 的一个中间件，解析 `body` 数据用的。
@@ -293,6 +293,33 @@ module.exports = app.listen(port, () => {
     <h1>ts-axios examples</h1>
     <ul>
       <li><a href="simple">Simple</a></li>
+    </ul>
+  </body>
+</html>
+```
+
+为了方便未来的测试，可以将所有后面需要用到的目录写在这里
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ts-axios examples</title>
+    <link rel="stylesheet" href="/global.css">
+  </head>
+  <body style="padding: 0 20px">
+    <h1>ts-axios examples</h1>
+    <ul>
+      <li><a href="simple">Simple</a></li>
+      <li><a href="base">Base</a></li>
+      <li><a href="error">Error</a></li>
+      <li><a href="extend">Extend</a></li>
+      <li><a href="interceptor">Interceptor</a></li>
+      <li><a href="config">Config</a></li>
+      <li><a href="cancel">Cancel</a></li>
+      <li><a href="more">More</a></li>
+      <li><a href="upload-download">Upload</a></li>
     </ul>
   </body>
 </html>

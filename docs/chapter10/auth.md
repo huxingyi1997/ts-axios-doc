@@ -63,6 +63,8 @@ if (auth) {
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 axios.post('/more/post', {
   a: 1

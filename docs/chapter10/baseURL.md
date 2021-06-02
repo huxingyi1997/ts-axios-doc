@@ -59,6 +59,8 @@ function transformURL(config: AxiosRequestConfig): string {
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 const instance = axios.create({
   baseURL: 'https://img.mukewang.com/'

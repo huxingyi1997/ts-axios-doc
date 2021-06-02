@@ -33,7 +33,7 @@ if (withCredentials) {
 
 ## demo 编写
 
-在 `examples` 目录下创建 `more` 目录，在 `cancel` 目录下创建 `index.html`:
+在 `examples` 目录下创建 `more` 目录，在 `more` 目录下创建 `index.html`:
 
 ```html
 <!DOCTYPE html>
@@ -63,6 +63,42 @@ axios.post('http://127.0.0.1:8088/more/server2', { }, {
   withCredentials: true
 }).then(res => {
   console.log(res)
+})
+```
+
+配置接口路由
+
+ `server.js`
+
+```
+router.get('/more/get', (req, res) => {
+  res.json(req.cookies)
+})
+
+router.post('/more/post', function (req, res) {
+  const auth = req.headers.authorization
+  const [type, credentials] = auth.split(' ')
+  console.log('atob on server:', atob(credentials))
+  const [username, password] = atob(credentials).split(':').map(item => item.trim())
+  if (type === 'Basic' && username === 'chen' && password === '123456') {
+    res.json(req.body)
+  } else {
+    res.status(401)
+    res.end('UnAuthorization')
+  }
+})
+
+router.get('/more/304', function (req, res) {
+  res.status(304)
+  res.end()
+})
+
+router.get('/more/A', function (req, res) {
+  res.end('A')
+})
+
+router.get('/more/B', function (req, res) {
+  res.end('B')
 })
 ```
 
@@ -105,6 +141,12 @@ module.exports = app.listen(port)
 ```
 
 这里需要安装一下 `cookie-parser` 插件，用于请求发送的 cookie。
+
+ `server2.js`需要在 `server.js`中导入
+
+```javascript
+require('./server2')
+```
 
 通过 demo 演示我们可以发现，对于同域请求，会携带 cookie，而对于跨域请求，只有我们配置了 `withCredentials` 为 true，才会携带 cookie。
 

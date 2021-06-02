@@ -4,7 +4,7 @@
 
 前面的章节我们完成 `ts-axios` 库的代码编写和单元测试。这一章我们希望把代码部署发布到公共 `npm` 上，供别人下载使用。但是并不是所有人都会使用 TypeScript 开发，仍然有大量的 JavaScript 用户，它们是不能直接引用 TypeScript 代码的，因此我们需要先对源码做编译和打包，然后再发布。
 
-由于我们会把包发布到公共的 npm 源，如果你还没有 `npm` 账号，那么需要先去[官网注册](https://www.npmjs.com/signup)。注册完成后，可以去终端执行 `npm login` 登录。这个步骤非常重要，决定你最终能否发布成功。
+由于我们会把包发布到公共的 npm 源，如果你还没有 `npm` 账号，那么需要先去[官网注册](https://www.npmjs.com/signup)。注册完成后，可以去终端执行 `npm login` 登录。这个步骤非常重要，决定你最终能否发布成功。注意，如果本地npm使用了淘宝镜像，需要切回npm官方镜像登陆`npm login --registry http://registry.npmjs.org`
 
 ## 编译和打包
 
@@ -91,6 +91,36 @@ export default {
 }
 ```
 
+增加一个`tsconfig.build.json`配置build效果
+
+```json
+{
+  "compilerOptions": {
+    "types": [],
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "target": "es5",
+    "module": "es2015",
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declarationDir": "dist/types",
+    "outDir": "dist/lib"
+  },
+  "include": ["src"]
+}
+```
+
+修改 `package.json` 中`scripts`的`build`
+
+```json
+"build": "tsc -p tsconfig.build.json --module commonjs && rollup -c rollup.config.ts && typedoc --tsconfig tsconfig.build.json --out docs --target es6 --theme minimal --mode file src"
+```
+
 然后我们在控制台执行 `npm run build`，会编译输出 `dist` 目录，其中 `lib` 目录是单个 `.ts` 文件编译后的 `.js` 文件。`types` 目录是所有 `.ts` 文件编译后生产的 `.d.ts` 声明文件。`axios.es5.js` 是编译后生成的 es 模式的入口文件，用在 `package.json` 的 `module` 字段，`axios.umd.js` 文件是编译后生成的 `umd` 模式的入口文件，用在 `package.json` 的 `main` 字段。
 
 ## 自动化部署
@@ -99,7 +129,7 @@ export default {
 
 ### 修改 package.json
 
-发布到 npm 之前你需要为你的包命名，由于 `ts-axios` 这个名字已经被占用了，我使用了 `ts-axios-new` 这个名称，当然你学到这里，就需要起一个新名字了。可以使用 `npm view [<@scope>/]<pkg>[@<version>]` 的方式去搜索一个包名是否已经存在，比如你搜索 `npm view ts-axios-new` 会发现这个包已经存在，返回这个包相关信息。如果你搜索 `npm view xxxx` 返回错误 404 的话，那么你就可以使用 `xxxx` 这个包名了。
+发布到 npm 之前你需要为你的包命名，由于 `ts-axios` 这个名字已经被占用了，我使用了 `ts-axios-hxy` 这个名称，当然你学到这里，就需要起一个新名字了。可以使用 `npm view --registry http://registry.npmjs.org [<@scope>/]<pkg>[@<version>]` 的方式去搜索一个包名是否已经存在，比如你搜索 `npm view --registry http://registry.npmjs.org ts-axios` 会发现这个包已经存在，返回这个包相关信息。如果你搜索 `npm view --registry http://registry.npmjs.org xxxx` 返回错误 404 的话，那么你就可以使用 `xxxx` 这个包名了。
 
 如果你想让你发布的包关联你的仓库地址，可以配置 `repository` 的 `url` 字段。
 
@@ -140,9 +170,11 @@ then
   git commit -m "[build] $VERSION"
   npm version $VERSION --message "[release] $VERSION"
   git push origin master
+  npm config set registry=http://registry.npmjs.org
 
   # publish
   npm publish
+  npm run deploy-docs
 fi
 ```
 
@@ -174,6 +206,25 @@ fi
 
 `npm publish` 是把仓库发布到 `npm` 上，我们会把 `dist` 目录下的代码都发布到 `npm` 上，因为我们在 `package.json` 中配置的是 `files` 是 `["dist"]`。
 
+`npm run deploy-docs`是自动部署网页文档，可以利用github-pages实现文档的在线阅读，我直接简单粗暴修改了`tools\gh-pages-publish.ts`里的文件
+
+```typescript
+const { cd, exec, echo, touch } = require("shelljs")
+
+echo("Deploying docs!!!")
+cd("docs")
+touch(".nojekyll")
+exec("git init")
+exec("git add .")
+exec('git config user.name ""')
+exec('git config user.email ""')
+exec('git commit -m "docs(docs): update gh-pages"')
+exec(
+  `git push --force --quiet "git@github.com:${yourname}/ts-axios.git" master:gh-pages`
+)
+echo("Docs deployed!!")
+```
+
 ## 运行部署脚本
 
 接下来我们就运行 `npm run pub` 脚本部署，我们会发现在 `npm run prepub` 阶段，在执行 `tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'` 的时候失败了，原因是我们有代码不符合 lint 规范。原来是 `core/xhr.ts` 文件中 `processCancel` 函数中对 `promise` 的处理，我们没有对异常情况处理，所以我们要给它加上 `catch` 的逻辑：
@@ -202,5 +253,4 @@ function processCancel(): void {
 通过编写部署脚本的一行命令发布的方式，不仅可以用在这种 JS 库，也可以用于我们平时项目开发中，可以大大帮助我们提高生产率，也是前端工程化中必不可少的一个环节，希望同学们都能学会并掌握它。
 
 至此我们完成了项目的部署和发布，我们也可以在 `npm` 官网上看到我们发布的包，下一节课我们来创建一个实际项目，来引用我们开发的 `ts-axios` 库。
-
 

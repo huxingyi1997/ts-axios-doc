@@ -169,6 +169,8 @@ describe('defaults', () => {
 
 `transform` 模块用来定义请求和响应的转换方法，我们需要为其编写单元测试。
 
+`test/transform.spec.ts`：
+
 ```typescript
 import axios, { AxiosResponse, AxiosTransformer } from '../src/index'
 import { getAjaxRequest } from './helper'

@@ -185,7 +185,7 @@ function transformResponseData(res: AxiosResponse): AxiosResponse {
 ```typescript
 export function extend<T, U>(to: T, from: U): T & U {
   for (const key in from) {
-    ;(to as T & U)[key] = from[key] as any
+    (to as T & U)[key] = from[key] as any
   }
   return to as T & U
 }
@@ -271,6 +271,52 @@ axios.post('/extend/post', { msg: 'post' })
 axios.put('/extend/put', { msg: 'put' })
 
 axios.patch('/extend/patch', { msg: 'patch' })
+```
+
+在 `server.ts` 中增加对应的请求
+
+```
+router.get('/extend/get', function(req, res) {
+  res.json({
+    msg: 'hello world'
+  })
+})
+
+router.options('/extend/options', function(req, res) {
+  res.end()
+})
+
+router.head('/extend/head', function(req, res) {
+  res.end()
+})
+
+router.delete('/extend/delete', function(req, res) {
+  res.end()
+})
+
+router.post('/extend/post', function(req, res) {
+  res.json(req.body)
+})
+
+router.put('/extend/put', function(req, res) {
+  res.json(req.body)
+})
+
+router.patch('/extend/patch', function(req, res) {
+  res.json(req.body)
+})
+
+// 响应数据支持泛型接口
+router.get('/extend/user', function(req, res) {
+  res.json({
+    code: 0,
+    message: 'ok',
+    result: {
+      name: 'Alice',
+      age: 18
+    }
+  })
+})
 ```
 
 然后在命令行运行 `npm run dev`，接着打开 chrome 浏览器，访问 `http://localhost:8080/` 即可访问我们的 demo 了，我们点到 `Extend` 目录下，通过开发者工具的 network 部分我们可以看到每个请求的发送情况。

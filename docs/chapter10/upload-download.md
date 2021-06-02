@@ -232,9 +232,9 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
 ## demo 编写
 
-这节课的 demo 非常有意思，我们第一次给界面上增加了一些交互的按钮。
+这节课的 demo 非常有意思，我们第一次给界面上增加了一些交互的按钮。在这里，与原文不同，我选择创建了一个新的`upload-download`文件夹进行操作
 
-`examples/more/index.html`
+`examples/upload-download/index.html`
 
 ```html
 <!DOCTYPE html>
@@ -255,17 +255,21 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   <button id="upload" type="button" class="btn btn-primary">Upload</button>
 </form>
 
-<script src="/__build__/more.js"></script>
+<script src="/__build__/upload-download.js"></script>
 </body>
 </html>
 ```
 
 另外，我们为了友好地展示上传和下载进度，我们引入了一个开源库 [nprogress](https://github.com/rstacruz/nprogress)，它可以在页面的顶部展示进度条。
 
-`examples/more/app.ts`：
+`examples/upload-download/app.ts`：
 
 ```typescript
-const instance = axios.create()
+import axios from '../../src/index'
+import 'nprogress/nprogress.css'
+import NProgress from 'nprogress'
+
+const instance = axios.create({})
 
 function calculatePercentage(loaded: number, total: number) {
   return Math.floor(loaded * 1.0) / total
@@ -289,13 +293,16 @@ function loadProgressBar() {
   }
 
   const setupStopProgress = () => {
-    instance.interceptors.response.use(response => {
-      NProgress.done()
-      return response
-    }, error => {
-      NProgress.done()
-      return Promise.reject(error)
-    })
+    instance.interceptors.response.use(
+      response => {
+        NProgress.done()
+        return response
+      },
+      error => {
+        NProgress.done()
+        return Promise.reject(error)
+      }
+    )
   }
 
   setupStartProgress()
@@ -307,8 +314,14 @@ loadProgressBar()
 
 const downloadEl = document.getElementById('download')
 
-downloadEl!.addEventListener('click', e => {
-  instance.get('https://img.mukewang.com/5cc01a7b0001a33718720632.jpg')
+const downloadFileURL = 'https://img.mukewang.com/5cc01a7b0001a33718720632.jpg'
+
+downloadEl.addEventListener('click', e => {
+  instance.get(downloadFileURL).then(res => {
+    console.log(
+      `download file success, data.length: ${res.data.length}, data.url: ${res.config.url}`
+    )
+  })
 })
 
 const uploadEl = document.getElementById('upload')
@@ -319,9 +332,12 @@ uploadEl!.addEventListener('click', e => {
   if (fileEl.files) {
     data.append('file', fileEl.files[0])
 
-    instance.post('/more/upload', data)
+    instance.post('/more/upload', data).then(() => {
+      console.log('upload file success, you can see it on ./exapmles/accept-upload-file')
+    })
   }
 })
+
 ```
 
 对于 `progress` 事件参数 `e`，会有 `e.total` 和 `e.loaded` 属性，表示进程总体的工作量和已经执行的工作量，我们可以根据这 2 个值算出当前进度，然后通过 `Nprogess.set` 设置。另外，我们通过配置请求拦截器和响应拦截器执行 `NProgress.start()` 和 `NProgress.done()`。
@@ -334,7 +350,8 @@ uploadEl!.addEventListener('click', e => {
 
 ```javascript
 const multipart = require('connect-multiparty')
-app.use(multipart({
+
+app.use(mutipart({
   uploadDir: path.resolve(__dirname, 'upload-file')
 }))
 
@@ -350,5 +367,13 @@ router.post('/more/upload', function(req, res) {
 
 为了保证代码正常运行，我们还需要在 `examples/webpack.config.js` 中添加 `css-loader` 和 `css-loader`，不要忘记先安装它们。
 
-至此，`ts-axios` 支持了上传下载进度事件的回调函数的配置，用户可以通过配置这俩函数实现对下载进度和上传进度的监控。下一节课我们来实现 http 的认证授权功能。
+```javascript
+rules: [
+  {
+    test: /\.css$/,
+    use: ['style-loader', 'css-loader']
+  }
+]
+```
 
+至此，`ts-axios` 支持了上传下载进度事件的回调函数的配置，用户可以通过配置这俩函数实现对下载进度和上传进度的监控。下一节课我们来实现 http 的认证授权功能。

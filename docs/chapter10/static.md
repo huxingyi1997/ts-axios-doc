@@ -120,6 +120,8 @@ getUri(config?: AxiosRequestConfig): string {
 
 ## demo 编写
 
+`examples/more/app.ts` 
+
 ```typescript
 function getA() {
   return axios.get('/more/A')
