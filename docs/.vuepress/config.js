@@ -12,7 +12,7 @@ module.exports = {
     repo: "huxingyi1997/ts-axios",
     // 自定义仓库链接文字。默认从 `themeConfig.repo` 中自动推断为
     // "GitHub"/"GitLab"/"Bitbucket" 其中之一，或是 "Source"。
-    repoLabel: "github源码",
+    repoLabel: "GitHub源码",
 
     // 以下为可选的编辑链接选项
 
@@ -25,7 +25,9 @@ module.exports = {
     docsDir: "docs",
     nav: [
       { text: '博客', link: 'https://hxy1997.xyz/2021/05/13/TypeScript%E9%87%8D%E6%9E%84axios/' },
-      { text: 'gitee源码', link: 'https://gitee.com/hxy1997/ts-axios' }
+      { text: 'Gitee文档', link: 'https://gitee.com/hxy1997/ts-axios-doc' },
+      { text: 'GitHub文档', link: 'https://github.com/huxingyi1997/ts-axios-doc' },
+      { text: 'Gitee源码', link: 'https://gitee.com/hxy1997/ts-axios' }
     ],
     sidebar: [
       {

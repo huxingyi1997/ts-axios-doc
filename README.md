@@ -33,3 +33,8 @@ npm run dev
 ```
 
 浏览器打开 `http://localhost:8080/ts-axios-doc/` 即可。
+
+## 代码参考
+
+[github](https://github.com/huxingyi1997/ts-axios)和[gitee](https://gitee.com/hxy1997/ts-axios)，可以直接看README.md说明部分使用
+
