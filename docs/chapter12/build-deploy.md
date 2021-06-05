@@ -10,7 +10,22 @@
 
 我们会利用 [rollup](https://github.com/rollup/rollup) 来打包我们的 `ts-axios` 库，它是一个非常著名的编译打包工具，Vue.js 也是利用 rollup 编译打包的。相比 webpack，它非常适合去编译和打包一些 JS 库。
 
-由于使用 `typescript-library-starter` 初始化我们的项目，我们已经拥有了 rollup 打包的相关配置和相关插件的安装，接下来我们就来对生成的 `rollup.config.ts` 做小小的修改。
+由于使用 `typescript-library-starter` 初始化我们的项目，我们已经拥有了 rollup 打包的相关配置和相关插件的安装，为了实现打包后代码的压缩，安装rollup-plugin-terser插件，
+
+`package.json`
+
+```json
+"devDependencies": {
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.18.0",
+}
+```
+
+接下来我们就来对生成的 `rollup.config.ts` 做小小的修改。
 
 ### 修改 rollup.config.ts
 
@@ -21,6 +36,7 @@ import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
+import { terser } from 'rollup-plugin-terser'
 
 const pkg = require('./package.json')
 
@@ -41,14 +57,22 @@ export default {
     // Allow json resolution
     json(),
     // Compile TypeScript files
-    typescript({ useTsconfigDeclarationDir: true }),
+    typescript({
+      typescript: require('typescript'),
+      objectHashIgnoreUnknownHack: true,
+      useTsconfigDeclarationDir: true
+    }),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve(),
-
+	terser({
+      compress: {
+        pure_funcs: ['console.log'] // 去掉console.log函数
+      }
+    }),
     // Resolve source maps to the original source
     sourceMaps()
   ]
@@ -77,7 +101,7 @@ export default {
 
 - plugins
 
-编译过程中使用的插件，其中 `rollup-plugin-typescript2` 就是用来编译 TypeScript 文件，`useTsconfigDeclarationDir` 表示使用 `tsconfig.json` 文件中定义的 `declarationDir`。其它插件感兴趣的同学可以自己去查阅文档。
+编译过程中使用的插件，其中 `rollup-plugin-typescript2` 就是用来编译 TypeScript 文件，为了防止与其他插件冲突，需要进行配置，`useTsconfigDeclarationDir` 表示使用 `tsconfig.json` 文件中定义的 `declarationDir`。其它插件感兴趣的同学可以自己去查阅文档。
 
 ### 修改 package.json
 
