@@ -275,7 +275,7 @@ axios.patch('/extend/patch', { msg: 'patch' })
 
 在 `server.ts` 中增加对应的请求
 
-```
+```typescript
 router.get('/extend/get', function(req, res) {
   res.json({
     msg: 'hello world'
